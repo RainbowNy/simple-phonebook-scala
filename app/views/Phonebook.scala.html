@@ -1,0 +1,24 @@
+@import domain.User
+@import java.util.ArrayList
+@(listOfUsers: ArrayList[User])
+
+@parts.common("Phonebook page"){
+<div>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">User Id</th>
+                <th scope="col">Phone number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(user <- listOfUsers) {
+                <tr>
+                    <th>@user.getId</th>
+                    <th>@user.getPhoneNumber</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+}
