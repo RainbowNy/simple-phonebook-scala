@@ -1,6 +1,6 @@
 package domain
 
-class User(newId: String, newPhoneNumber: String) {
+case class User(newId: String, newPhoneNumber: String) {
   private var Id = newId
   private var phoneNumber = newPhoneNumber
 
