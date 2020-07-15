@@ -1,6 +1,7 @@
-@import domain.User
-@import java.util.ArrayList
-@(listOfUsers: ArrayList[User])
+@import domain.Phone
+@import scala.collection.mutable.ArrayBuffer
+
+@(listOfPhones: ArrayBuffer[Phone])
 
 @parts.common("Phonebook page"){
 <div>
@@ -12,11 +13,13 @@
             </tr>
         </thead>
         <tbody>
-            @for(user <- listOfUsers) {
-                <tr>
-                    <th>@user.getId</th>
-                    <th>@user.getPhoneNumber</th>
-                </tr>
+            @for(phone <- listOfPhones) {
+                @if(phone != null) {
+                    <tr>
+                        <th>@phone.getId</th>
+                        <th>@phone.getPhoneNumber</th>
+                    </tr>
+                }
             }
         </tbody>
     </table>

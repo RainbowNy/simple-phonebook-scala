@@ -4,5 +4,9 @@
 # ~~~~
 
 GET     /                           controllers.PhonebookController.phonebookPage()
+GET     /add                        controllers.PhonebookController.addPhonePage()
+
+POST    /                           controllers.PhonebookController.findPhoneById()
+POST    /add                        controllers.PhonebookController.addPhone()
 
       

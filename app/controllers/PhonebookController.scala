@@ -1,22 +1,54 @@
 package controllers
 
-import java.util
-
-import domain.User
+import domain.Phone
 import javax.inject.{Inject, Singleton}
+import play.api.data.Forms._
+import play.api.data._
 import play.api.mvc._
+import services.PhoneService
+
+import scala.collection.mutable.ArrayBuffer
 
 @Singleton
 class PhonebookController @Inject()(cc: ControllerComponents) extends AbstractController(cc){
+  private val phoneService = new PhoneService
 
-  def phonebookPage(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-    val listOfUser = new util.ArrayList[User]()
-    var user = new User("1", "+7")
-    var user2 = new User("2", "+20")
+  private val phoneForm = Form(
+    mapping(
+      "id" -> text,
+      "phoneNumber" -> text
+    )(Phone.apply)(Phone.unapply)
+  )
 
-    listOfUser.add(user)
-    listOfUser.add(user2)
+  def phonebookPage(): Action[AnyContent] = Action {
+    Ok(views.html.Phonebook(phoneService.getListOfPhones))
+  }
 
-    Ok(views.html.Phonebook(listOfUser))
+  def addPhonePage(): Action[AnyContent] = Action {
+    Ok(views.html.AddPhone(null))
+  }
+
+  def findPhoneById(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    val postValues = request.body.asFormUrlEncoded
+    val listOfPhone = new ArrayBuffer[Phone]
+
+    postValues.map {args =>
+      val phoneId = args("id").head
+
+      listOfPhone += phoneService.getPhoneByPhoneId(phoneService.getListOfPhones, phoneId)
+      Ok(views.html.Phonebook(listOfPhone))
+    }.get
+  }
+
+  def addPhone(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    val phoneData = phoneForm.bindFromRequest.get
+
+    if(phoneService.getPhoneByPhoneId(phoneService.getListOfPhones, phoneData.getId) != null){
+      Ok(views.html.AddPhone("Phone already exist!"))
+    }else {
+      phoneService.savePhoneToJsonFile(phoneService.getListOfPhones, Phone(phoneData.getId, phoneData.getPhoneNumber))
+
+      Redirect(routes.PhonebookController.phonebookPage())
+    }
   }
 }

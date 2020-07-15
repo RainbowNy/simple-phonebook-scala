@@ -1,0 +1,26 @@
+@import views.html.parts.common
+@(message: String)
+
+    @common("Add phone"){
+        @if(message != null){
+            <div class="alert alert-danger align-items-center justify-content-center row" role="alert">
+            @message
+            </div>
+        }
+
+        <div>
+            <form method="post" class="row justify-content-center align-items-center">
+                <div class="form-group">
+                    <label for="id">id</label>
+                    <input type="text" class="form-control" id="id" name="id" placeholder="Type id" required>
+                </div>
+
+                <div class="form-group ml-2">
+                    <label for="phoneNumber">Phone number</label>
+                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Type phone number" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary ml-2 mt-3">Save</button>
+            </form>
+        </div>
+    }

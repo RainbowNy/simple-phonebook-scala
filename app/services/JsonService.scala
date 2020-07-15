@@ -2,7 +2,7 @@ package services
 
 import java.io.{File, PrintWriter}
 
-import domain.User
+import domain.Phone
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
@@ -13,14 +13,14 @@ import scala.io.Source
 class JsonService {
   private val jsonFilePath = "public/json/example.json"
 
-  implicit val userWrites: Writes[User] = (user: User) => Json.obj(
-    "id" -> user.getId,
-    "phoneNumber" -> user.getPhoneNumber
+  implicit val userWrites: Writes[Phone] = (phone: Phone) => Json.obj(
+    "id" -> phone.getId,
+    "phoneNumber" -> phone.getPhoneNumber
   )
 
-  implicit val userReads: Reads[User] = (
+  implicit val userReads: Reads[Phone] = (
     (JsPath \\ "id").read[String] and
-      (JsPath \\ "phoneNumber").read[String])(User.apply _)
+      (JsPath \\ "phoneNumber").read[String])(Phone.apply _)
 
   def getStructureOfJsonFile: String = {
     var structureOfJsonFile = ""
@@ -35,41 +35,41 @@ class JsonService {
     structureOfJsonFile
   }
 
-  def getListOfUsers(structureOfJsonFile: String): ArrayBuffer[User] = {
-    var listOfUsers = new ArrayBuffer[User]()
+  def getListOfPhones(structureOfJsonFile: String): ArrayBuffer[Phone] = {
+    var listOfPhones = new ArrayBuffer[Phone]()
     val json = Json.parse(structureOfJsonFile)
 
-    for(user <- json.as[Seq[User]]) {
-      listOfUsers += user
+    for(user <- json.as[Seq[Phone]]) {
+      listOfPhones += user
     }
 
-    listOfUsers
+    listOfPhones
   }
 
-  def addUserToListOfUsers(listOfUsers: ArrayBuffer[User], newUser: User): Unit = {
-    if(newUser != null){
-      listOfUsers += newUser
+  def addUserToListOfUsers(listOfPhones: ArrayBuffer[Phone], newPhone: Phone): Unit = {
+    if(newPhone != null){
+      listOfPhones += newPhone
 
-      saveListOfUsers(listOfUsers)
+      saveListOfPhones(listOfPhones)
     }
   }
 
-  private def saveListOfUsers(listOfUsers: ArrayBuffer[User]): Unit = {
+  private def saveListOfPhones(listOfPhones: ArrayBuffer[Phone]): Unit = {
     val writerToJsonFile = new PrintWriter(new File(jsonFilePath))
 
     writerToJsonFile.write(
       Json.prettyPrint(
-        transformListToJsonArray(listOfUsers)
+        transformListToJsonArray(listOfPhones)
       )
     )
 
     writerToJsonFile.close()
   }
 
-  private def transformListToJsonArray(listOfUsers: ArrayBuffer[User]) : JsArray = {
+  private def transformListToJsonArray(listOfPhones: ArrayBuffer[Phone]) : JsArray = {
     val arrayOfJsonValues = new ArrayBuffer[JsValue]
 
-    for (user <- arrayOfJsonValues){
+    for (user <- listOfPhones){
       arrayOfJsonValues.append(Json.toJson(user))
     }
 
