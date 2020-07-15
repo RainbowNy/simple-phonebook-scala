@@ -1,5 +1,4 @@
 # Simple phonebook
-Project to save and filter numbers of user's phones at Web
 
 * Main language - Scala 2.12
 * Framework - Play Framework 2.8
