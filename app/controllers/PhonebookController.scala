@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.UUID
+
 import domain.Phone
 import javax.inject.{Inject, Singleton}
 import play.api.data.Forms._
@@ -43,11 +45,15 @@ class PhonebookController @Inject()(cc: ControllerComponents) extends AbstractCo
   def addPhone(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val phoneData = phoneForm.bindFromRequest.get
 
-    if(phoneService.getPhoneByPhoneId(phoneService.getListOfPhones, phoneData.getId) != null){
-      Ok(views.html.AddPhone("Phone already exist!"))
-    }else {
-      phoneService.savePhoneToJsonFile(phoneService.getListOfPhones, Phone(phoneData.getId, phoneData.getPhoneNumber))
+    if(phoneData.getId.isBlank){
+      phoneData.setId(UUID.randomUUID().toString)
 
+      phoneService.savePhoneToJsonFile(phoneService.getListOfPhones, Phone(phoneData.getId, phoneData.getPhoneNumber))
+      Redirect(routes.PhonebookController.phonebookPage())
+    } else if(phoneService.getPhoneByPhoneId(phoneService.getListOfPhones, phoneData.getId) != null){
+      Ok(views.html.AddPhone("Phone already exist!"))
+    } else {
+      phoneService.savePhoneToJsonFile(phoneService.getListOfPhones, Phone(phoneData.getId, phoneData.getPhoneNumber))
       Redirect(routes.PhonebookController.phonebookPage())
     }
   }
